@@ -1,0 +1,41 @@
+<script>
+$(function() {
+  // ローカル側のモデル
+  window.Post = Backbone.Model.extend({
+    url: function() {
+      var base = "posts";
+      if (this.isNew()) {
+        return base;
+      } else {
+        return base + "/" + this.id;
+      }
+    }
+  });
+  // ローカル側のコレクション
+  window.PostList = Backbone.Collection.extend({
+    model: Post,
+    url: "posts"
+  });
+  // コレクションをインスタンス化
+  window.Posts = new PostList();
+ 
+ 
+  // 実際に使ってみる
+ 
+  // 新しいpostを作成
+  var post = new Post({title: "test", body: "test", published: true});
+  post.save();
+ 
+  // 更新といきたい所ですが、saveはajaxでasyncっぽいのでこのままでは無理です
+  // post.set({title: "test update"});
+  // post.save();
+ 
+  // 一覧取得(上記と同じ理由で今回作成分は、更新されていない可能性大です)
+  Posts.fetch({success: function(col, res) {
+    col.each(function(e) {
+      alert(e.get("id") + ":" + e.get("title"));
+    });
+  }});
+
+});
+</script>
